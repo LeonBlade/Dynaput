@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+	<script src="jquery.dynaput.js"></script>
+	<script>
+	$(function() {
+		$('.dynaput').dynaput();
+	});
+	</script>
+	<style>input[type=text]{border:1px solid #CCC;border-radius:3px;padding:5px;box-shadow:inset 0 1px 1px #DDD}</style>
+</head>
+<body>
+	
+	<div><input id="ssn" type="hidden" class="dynaput" placeholder="yes" format="XXX-XX-XXXX" value="555-66-7777" delim="-" /></div>
+	<div><input id="date" type="hidden" class="dynaput" placeholder="yes" format="MM/DD/YYYY" delim="/" /></div>
+	<div><input id="phone" type="hidden" class="dynaput" placeholder="no" format="555-555-5555" value="555-666-7777" delim="-" /></div>
+	
+</body>
+</html>
