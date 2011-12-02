@@ -1,3 +1,7 @@
+/**
+ * jquery.dynaput.js by James Stine (leon.blade@gmail.com)
+ * version 1.0
+**/
 (function($) {
 	
 	$.fn.dynaput = function() {
