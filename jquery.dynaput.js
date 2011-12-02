@@ -10,62 +10,65 @@
 			var field = $(this).attr('id');
 			var values = $(this).val().split(delim);
 			var container = $('<div>');
-			var elements = $.each(pieces, function(i, v) {
+			var elements = $.map(pieces, function(v, i) {
 				var element = $('<input>').attr({
 					type: 'text',
 					size: v.length,
 					maxlength: v.length,
 					placeholder: (placeholder=='yes')?v:'',
+					value: (values[i])?values[i]:'',
+					class: '_dynaput',
 					field: field,
-					value: (values[i])?values[i]:''
+					delim: delim
 				});
-				// whenever you type in the phone fields
-				$(element).bind('keydown', function(key) {
-					// check for a selection
-					var _field = '[field='+field+']';
-					// left
-					if (key.which == 37) {
-						if (getCaret($(this)[0]) == 0) {
-							setCaretPosition($(this).prev(_field)[0], $(this).prev(_field).attr('maxlength'));
-							return false;
-						}
-					}
-					// right
-					else if (key.which == 39) {
-						if (getCaret($(this)[0]) == $(this).val().length) {
-							setCaretPosition($(this).next(_field)[0], 0);
-							return false;
-						}
-					}
-					// backspace
-					else if (key.which == 8) {
-						if ($(this).val() == "") {
-							$(this).prev(_field).focus();
-							return false;
-						}
-					}
-					// delete
-					else if (key.which == 46) {
-						if ($(this).val() == "") {
-							$(this).next(_field).focus();
-							return false;
-						}
-					}
-					// up and down (this is so hitting either up or down wont advance to the next input for the next conditional)
-					else if (key.which == 38 || key.which == 40) {}
-					// if we have reached this input's maxlength then we will move to the next input
-					else if ($(this).val().length == $(this).attr("maxlength") && key.which != 38 && key.which != 40) {
-						$(this).next(_field).focus();
-					}
-					// set the hidden value to a map of the fields joined by the inputs delimiter attribute
-					$('#'+field).val($.map($('[field='+field+']'),function(n,i){return $(n).val()}).join(delim));
-				});
-				$(container).append(element);
+				return element[0].outerHTML;
 			});
 			$(this).after(container);
-			$(container).prepend($(this));
+			$(container).prepend($(this)).append(elements.join(delim));
 		});
 	};
+	
+	// this will respond to any field object with class dynaput
+	$('._dynaput').live('keydown', function(key) {
+		// grab field and delim
+		var field = $(this).attr('field');
+		var delim = $(this).attr('delim');
+		// switch out the keyCode
+		switch (key.keyCode) {
+			case KEY_LEFT:
+				if (getCaret($(this)[0]) == 0) {
+					setCaretPosition($(this).prev('._dynaput')[0], $(this).prev('._dynaput').attr('maxlength'));
+					return false;
+				}
+				break;
+			case KEY_RIGHT:
+				if (getCaret($(this)[0]) == $(this).val().length) {
+					setCaretPosition($(this).next('._dynaput')[0], 0);
+					return false;
+				}
+				break;
+			case KEY_BACKSPACE:
+				if ($(this).val() == "") {
+					setCaretPosition($(this).prev('._dynaput')[0], $(this).prev('._dynaput').attr('maxlength'));
+					return false;
+				}
+				break;
+			case KEY_DELETE:
+				if ($(this).val() == "") {
+					setCaretPosition($(this).next('._dynaput')[0], 0);
+					return false;
+				}
+				break;
+			default:
+				if ($(this).val().length == $(this).attr("maxlength") && key.which != KEY_UP && key.which != KEY_DOWN) {
+					$(this).next('._dynaput').focus();
+				}
+				break;
+		}
+		// set the hidden value to a map of the fields joined by the inputs delimiter attribute
+		console.log($(this).parent().children('._dynaput'));
+		$('#'+field).val($.map($(this).parent().children('._dynaput'),function(n,i){return $(n).val()}).join(delim));
+	});
 	
 	function getCaret(el) { 
 		if (el.selectionStart) { 
@@ -97,5 +100,13 @@
 	        range.select();
 	    }
 	}
+	
+	// keycodes
+	var KEY_BACKSPACE = 8;
+	var KEY_LEFT = 37;
+	var KEY_UP = 38;
+	var KEY_RIGHT = 39;
+	var KEY_DOWN = 40;
+	var KEY_DELETE = 46;
 	
 })(jQuery);
