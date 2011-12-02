@@ -58,7 +58,7 @@
 				}
 				break;
 			case KEY_DELETE:
-				if ($(this).val() == "") {
+				if ($(this).val() == "" || getCaret($(this)[0]) == $(this).val().length) {
 					setCaretPosition($(this).next('._dynaput')[0], 0);
 					return false;
 				}
@@ -70,39 +70,42 @@
 				break;
 		}
 		// set the hidden value to a map of the fields joined by the inputs delimiter attribute
-		console.log($(this).parent().children('._dynaput'));
 		$('#'+field).val($.map($(this).parent().children('._dynaput'),function(n,i){return $(n).val()}).join(delim));
 	});
 	
 	function getCaret(el) { 
-		if (el.selectionStart) { 
-	    	return el.selectionStart; 
-	  	} else if (document.selection) { 
-	    	el.focus(); 
-	    	var r = document.selection.createRange(); 
-	    	if (r == null) { 
-	      		return 0; 
-	    	} 
-	    	var re = el.createTextRange(), 
-	        rc = re.duplicate(); 
-	    	re.moveToBookmark(r.getBookmark()); 
-	    	rc.setEndPoint('EndToStart', re); 
-	    	return rc.text.length; 
-	  	}  
-		return 0; 
+		if (el) {
+			if (el.selectionStart) { 
+		    	return el.selectionStart; 
+		  	} else if (document.selection) { 
+		    	el.focus(); 
+		    	var r = document.selection.createRange(); 
+		    	if (r == null) { 
+		      		return 0; 
+		    	} 
+		    	var re = el.createTextRange(), 
+		        rc = re.duplicate(); 
+		    	re.moveToBookmark(r.getBookmark()); 
+		    	rc.setEndPoint('EndToStart', re); 
+		    	return rc.text.length; 
+		  	}
+		}
+		return 0;
 	}
 	function setCaretPosition(el, pos) {
-	    if(el.setSelectionRange) {
-	        el.focus();
-	        el.setSelectionRange(pos, pos);
-	    }
-	    else if (el.createTextRange) {
-	        var range = el.createTextRange();
-	        range.collapse(true);
-	        range.moveEnd('character', pos);
-	        range.moveStart('character', pos);
-	        range.select();
-	    }
+		if (el) {
+	    	if(el.setSelectionRange) {
+		        el.focus();
+		        el.setSelectionRange(pos, pos);
+		    }
+		    else if (el.createTextRange) {
+		        var range = el.createTextRange();
+		        range.collapse(true);
+		        range.moveEnd('character', pos);
+		        range.moveStart('character', pos);
+		        range.select();
+		    }
+		}
 	}
 	
 	// keycodes
