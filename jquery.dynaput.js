@@ -1,6 +1,6 @@
 /**
  * jquery.dynaput.js by James Stine (leon.blade@gmail.com)
- * version 1.0
+ * version 1.1
 **/
 (function($) {
 	
@@ -20,10 +20,9 @@
 					size: v.length,
 					maxlength: v.length,
 					placeholder: (placeholder=='yes')?v:'',
-					value: (values[i])?values[i]:'',
 					class: '_dynaput',
 					field: field,
-					delim: delim
+					'value': (values[i] == undefined)?'':values[i]
 				});
 				return element[0].outerHTML;
 			});
@@ -36,7 +35,7 @@
 	$('._dynaput').live('keydown', function(key) {
 		// grab field and delim
 		var field = $(this).attr('field');
-		var delim = $(this).attr('delim');
+		var delim = $('#'+field).attr('delim');
 		// switch out the keyCode
 		switch (key.keyCode) {
 			case KEY_LEFT:
@@ -71,6 +70,13 @@
 		}
 		// set the hidden value to a map of the fields joined by the inputs delimiter attribute
 		$('#'+field).val($.map($(this).parent().children('._dynaput'),function(n,i){return $(n).val()}).join(delim));
+	});
+	
+	$('._dynaput').live('blur', function() {
+		// grab field and delim
+		var field = $(this).attr('field');
+		var delim = $('#'+field).attr('delim');
+		$('#'+field).val($.map($(this).parent().children('._dynaput'),function(n,i){return $(n).val()}).join(delim)); 
 	});
 	
 	function getCaret(el) { 
