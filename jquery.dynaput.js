@@ -1,6 +1,6 @@
 /**
  * jquery.dynaput.js by James Stine (leon.blade@gmail.com)
- * version 1.1
+ * version 1.2
 **/
 (function($) {
 	
@@ -62,8 +62,15 @@
 					return false;
 				}
 				break;
+			case KEY_TAB:
+				return false;
+				break;
+			case KEY_UP:
+			case KEY_DOWN:
+				break;
 			default:
-				if ($(this).val().length == $(this).attr("maxlength") && key.which != KEY_UP && key.which != KEY_DOWN) {
+				// if our current length is at our max length and we dont have something selected in the current element
+				if ($(this).val().length == $(this).attr("maxlength") && $(this)[0].selectionStart == $(this)[0].selectionEnd) {
 					$(this).next('._dynaput').focus();
 				}
 				break;
@@ -121,5 +128,6 @@
 	var KEY_RIGHT = 39;
 	var KEY_DOWN = 40;
 	var KEY_DELETE = 46;
+	var KEY_TAB = 9;
 	
 })(jQuery);
